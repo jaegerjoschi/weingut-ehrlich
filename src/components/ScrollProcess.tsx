@@ -209,13 +209,19 @@ function ProcessScrubbed({
 
           {/* Pergament-Schleier von links fuer ruhigen Textkontrast: im
               Textbereich kraeftig deckend, faellt danach zuegig ab, damit
-              die Animation rechts sichtbar bleibt. */}
+              die Animation rechts sichtbar bleibt. Ab 88% zieht ein knapper
+              Gegen-Schleier wieder an: ohne ihn stand die Video-Box (max-w-
+              [1440px]) auf breiten Viewports mit hartem Rand gegen das
+              umgebende Pergament, da die Video-Maske selbst nur oben/unten
+              abrundet (siehe videoMask), links/rechts aber bis zum Rand
+              deckend bleibt. Bewusst schmal (nur die letzten ~12%), damit
+              die Animation dort weiterhin grossflaechig sichtbar bleibt. */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10"
             style={{
               background:
-                "linear-gradient(to right, rgba(240,235,225,0.97) 0%, rgba(240,235,225,0.93) 30%, rgba(240,235,225,0.55) 50%, rgba(240,235,225,0.08) 68%, rgba(240,235,225,0) 80%)",
+                "linear-gradient(to right, rgba(240,235,225,0.97) 0%, rgba(240,235,225,0.93) 30%, rgba(240,235,225,0.55) 50%, rgba(240,235,225,0.08) 68%, rgba(240,235,225,0) 80%, rgba(240,235,225,0) 88%, rgba(240,235,225,0.18) 94%, rgba(240,235,225,0.95) 100%)",
             }}
           />
 
