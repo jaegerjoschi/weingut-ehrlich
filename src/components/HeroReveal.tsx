@@ -5,6 +5,7 @@ import { useDataSaver } from "../lib/useDataSaver";
 import { Picture } from "./ui/Picture";
 import { TextLink } from "./ui/TextLink";
 import { hero as copy } from "../content/copy";
+import { withBase } from "../lib/publicUrl";
 
 /**
  * Zentrierter Hero als Scroll-Animation. Das Anwesen-Video (kahle Reben bis
@@ -128,15 +129,15 @@ function HeroScrubbed() {
             <video
               ref={videoRef}
               className="h-full w-full object-cover object-[center_50%]"
-              poster="/media/estate-reveal-poster.webp"
+              poster={withBase("/media/estate-reveal-poster.webp")}
               muted
               playsInline
               preload="auto"
               aria-hidden="true"
               tabIndex={-1}
             >
-              <source media="(max-width: 768px)" src="/media/estate-reveal-mobile.mp4" type="video/mp4" />
-              <source src="/media/estate-reveal.mp4" type="video/mp4" />
+              <source media="(max-width: 768px)" src={withBase("/media/estate-reveal-mobile.mp4")} type="video/mp4" />
+              <source src={withBase("/media/estate-reveal.mp4")} type="video/mp4" />
             </video>
           </div>
 
@@ -216,7 +217,7 @@ function HeroStatic() {
     >
       <div className="absolute inset-0 -z-10 mx-auto max-w-[1440px]" style={maskStyle}>
         <Picture
-          base="/media/estate-reveal-poster"
+          base={withBase("/media/estate-reveal-poster")}
           alt="Weinberg und Gutshaus von Weingut Ehrlich im Abendlicht"
           className="h-full w-full object-cover object-[center_50%]"
           eager

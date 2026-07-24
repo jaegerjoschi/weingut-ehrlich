@@ -13,6 +13,7 @@ import { Footer } from "./components/Footer";
 import { growth, process as processCopy } from "./content/copy";
 import { growthSteps } from "./data/growthSteps";
 import { processSteps } from "./data/processSteps";
+import { withBase } from "./lib/publicUrl";
 
 // Eyebrow-Sparsamkeit (max. 1 pro 3 Sektionen): nur Hero, "Wachstum" und
 // WineCollection tragen einen Sektions-Eyebrow. "Verarbeitung" bekommt daher
@@ -40,10 +41,10 @@ export default function App() {
 
         <ScrollProcess
           id="wachstum"
-          videoSrc="/media/vine-growth.mp4"
-          videoSrcMobile="/media/vine-growth-mobile.mp4"
-          posterStart="/media/vine-growth-start"
-          posterEnd="/media/vine-growth-end"
+          videoSrc={withBase("/media/vine-growth.mp4")}
+          videoSrcMobile={withBase("/media/vine-growth-mobile.mp4")}
+          posterStart={withBase("/media/vine-growth-start")}
+          posterEnd={withBase("/media/vine-growth-end")}
           posterEndAlt="Rebstock mit drei vollen, noch grünen Traubenbündeln"
           eyebrow={growth.eyebrow}
           heading={growth.heading}
@@ -55,10 +56,10 @@ export default function App() {
 
         <ScrollProcess
           id="verarbeitung"
-          videoSrc="/media/wine-process.mp4"
-          videoSrcMobile="/media/wine-process-mobile.mp4"
-          posterStart="/media/wine-process-start"
-          posterEnd="/media/wine-process-end"
+          videoSrc={withBase("/media/wine-process.mp4")}
+          videoSrcMobile={withBase("/media/wine-process-mobile.mp4")}
+          posterStart={withBase("/media/wine-process-start")}
+          posterEnd={withBase("/media/wine-process-end")}
           posterEndAlt="Gefüllte Weinflasche neben Fass und Gärglas"
           heading={processCopy.heading}
           steps={processSteps}

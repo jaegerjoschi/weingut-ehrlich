@@ -8,6 +8,8 @@
  * und die sechs Platzhalterbilder ersetzen, der Rest der Seite bleibt stehen.
  */
 
+import { withBase } from "../lib/publicUrl";
+
 export const brand = {
   name: "Weingut Ehrlich",
   short: "Weingut Ehrlich",
@@ -59,7 +61,7 @@ export const terroir = {
     "Seit 2015 bewirtschaften wir den gesamten Betrieb biologisch. Bewässert wird nicht: Die Reben sollen lernen, ihre Wurzeln so tief zu schicken, wie sie es brauchen.",
   ],
   image: {
-    src: "/media/terroir.jpg",
+    src: withBase("/media/terroir.jpg"),
     alt: "Botanische Illustration eines Querschnitts durch den vulkanischen Lössboden einer Steillage am Kaiserstuhl",
     placeholderLabel: "Terroir",
     aspectClass: "aspect-[4/3]",
@@ -76,7 +78,7 @@ export const family = {
     role: "Vierte Generation",
   },
   image: {
-    src: "/media/family.jpg",
+    src: withBase("/media/family.jpg"),
     alt: "Botanische Illustration des Gutshauses und der Weinberge von Weingut Ehrlich",
     placeholderLabel: "Familie",
     aspectClass: "aspect-[4/3]",

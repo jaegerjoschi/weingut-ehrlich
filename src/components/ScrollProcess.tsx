@@ -194,7 +194,7 @@ function ProcessScrubbed({
               poster={`${posterStart}.webp`}
               muted
               playsInline
-              preload="none"
+              preload={shouldLoad ? "auto" : "none"}
               aria-hidden="true"
               tabIndex={-1}
             >

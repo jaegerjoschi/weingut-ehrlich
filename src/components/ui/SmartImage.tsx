@@ -11,11 +11,20 @@ interface SmartImageProps {
   height?: number;
 }
 
+const toWebp = (jpgSrc: string) => jpgSrc.replace(/\.jpe?g$/i, ".webp");
+
 /**
  * Bild mit ruhigem Pergament-Platzhalter. Solange die echte Illustration noch
  * nicht in /public/media liegt, erscheint ein dezenter Verlauf in Stein-/
  * Pergamenttoenen mit Label statt eines kaputten Bildes. Sobald die Datei
  * vorhanden ist, erscheint sie automatisch (kein Codeaenderung noetig).
+ *
+ * Versucht zuerst die per Namenskonvention aus src abgeleitete WebP-Variante,
+ * faellt bei Fehlschlag auf das JPG zurueck, erst bei erneutem Fehlschlag auf
+ * den Platzhalter. Bewusst ein einzelnes <img> mit zweistufigem onError statt
+ * <picture><source type="image/webp">: ein 404 auf einer picture-source faellt
+ * NICHT automatisch auf img[src] zurueck (Spec-Verhalten), das wuerde bei
+ * fehlendem WebP faelschlich den Platzhalter zeigen, obwohl das JPG da ist.
  */
 export function SmartImage({
   src,
@@ -26,9 +35,12 @@ export function SmartImage({
   width,
   height,
 }: SmartImageProps) {
-  const [failed, setFailed] = useState(false);
+  const webpSrc = toWebp(src);
+  const [stage, setStage] = useState<"webp" | "original" | "failed">(
+    webpSrc !== src ? "webp" : "original",
+  );
 
-  if (failed) {
+  if (stage === "failed") {
     return (
       <div
         role="img"
@@ -44,14 +56,14 @@ export function SmartImage({
 
   return (
     <img
-      src={src}
+      src={stage === "webp" ? webpSrc : src}
       alt={alt}
       width={width}
       height={height}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
       className={className}
-      onError={() => setFailed(true)}
+      onError={() => setStage((s) => (s === "webp" ? "original" : "failed"))}
     />
   );
 }
