@@ -192,7 +192,7 @@ function HeroOverlays() {
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(64% 48% at 50% 40%, rgba(240,235,225,0.9) 0%, rgba(240,235,225,0.62) 42%, rgba(240,235,225,0.15) 63%, rgba(240,235,225,0) 78%)",
+            "radial-gradient(58% 60% at 50% 47%, rgba(240,235,225,0.92) 0%, rgba(240,235,225,0.82) 38%, rgba(240,235,225,0.55) 60%, rgba(240,235,225,0.2) 80%, rgba(240,235,225,0) 94%)",
         }}
       />
       <div
