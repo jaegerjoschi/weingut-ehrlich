@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output (regenerate with: npm run build)
+dist/
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# OS
+.DS_Store
+
+# Claude Code local settings (personal, not shared)
+.claude/settings.local.json
+
+# Unused/exploratory source video takes, not referenced by scripts/gen-video.mjs
+# (Herosection.mp4, growing_wine_3.mp4, wine_process.mp4 ARE used and stay tracked)
+/growing_wine.mp4
+/growing_wine_2.mp4
+/wine_process_2.mp4
+
+# Raw/unoptimized originals of the illustrations, already optimized under public/media/
+/family.jpg
+/terroir.jpg
+/wine-cuvee.jpg
+/wine-grauburgunder.jpg
+/wine-spaetburgunder.jpg
+/wine-weissburgunder.jpg

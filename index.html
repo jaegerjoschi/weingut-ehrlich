@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>Weingut Ehrlich | Familienweingut am Kaiserstuhl seit 1928</title>
+    <meta
+      name="description"
+      content="Weingut Ehrlich bewirtschaftet seit 1928 in vierter Generation Steillagen am Kaiserstuhl in Baden. Handlese, biologischer Anbau seit 2015, Verkostungen nach Vereinbarung in Achkarren."
+    />
+    <meta name="author" content="Weingut Ehrlich" />
+    <meta name="geo.region" content="DE-BW" />
+    <meta name="geo.placename" content="Achkarren, Kaiserstuhl" />
+    <meta name="geo.position" content="48.1075;7.6178" />
+    <meta name="ICBM" content="48.1075, 7.6178" />
+    <link rel="canonical" href="https://www.weingut-ehrlich.de/" />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="business.business" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content="Weingut Ehrlich" />
+    <meta property="og:title" content="Weingut Ehrlich | Familienweingut am Kaiserstuhl seit 1928" />
+    <meta
+      property="og:description"
+      content="Vier Generationen, ein Boden. Handlese, biologischer Anbau und Weine aus den Steillagen des Kaiserstuhl."
+    />
+    <meta property="og:image" content="/media/estate-reveal-poster.jpg" />
+    <meta property="og:url" content="https://www.weingut-ehrlich.de/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Weingut Ehrlich" />
+    <meta
+      name="twitter:description"
+      content="Familienweingut in vierter Generation am Kaiserstuhl. Seit 1928."
+    />
+    <meta name="twitter:image" content="/media/estate-reveal-poster.jpg" />
+    <meta name="theme-color" content="#f0ebe1" />
+
+    <!-- Schriften: Fraunces (Headlines) und Inter (Fliesstext), self-hosted ueber
+         @fontsource (siehe main.tsx), kein Aufruf externer Font-CDNs zur Laufzeit.
+         Die Hero-H1-Schnittstufe (Fraunces 600) liegt zusaetzlich unter
+         public/fonts/ und wird hier direkt vorgeladen, damit der erste sichtbare
+         Text nicht auf das Nachladen der Schrift wartet. -->
+    <link
+      rel="preload"
+      href="/fonts/fraunces-600.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Strukturierte Daten: Winery (schema.org) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Winery",
+        "name": "Weingut Ehrlich",
+        "description": "Familiengefuehrtes Weingut in vierter Generation am Kaiserstuhl. Handlese, biologischer Anbau seit 2015, Verkostungen nach Vereinbarung.",
+        "url": "https://www.weingut-ehrlich.de/",
+        "image": "https://www.weingut-ehrlich.de/media/estate-reveal-poster.jpg",
+        "telephone": "+49 7662 000000",
+        "email": "hof@weingut-ehrlich.de",
+        "priceRange": "$$",
+        "foundingDate": "1928",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Winzerweg 8",
+          "addressLocality": "Vogtsburg im Kaiserstuhl (Achkarren)",
+          "postalCode": "79235",
+          "addressRegion": "Baden-Wuerttemberg",
+          "addressCountry": "DE"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 48.1075,
+          "longitude": 7.6178
+        },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Kaiserstuhl" },
+          { "@type": "AdministrativeArea", "name": "Baden" }
+        ],
+        "founder": { "@type": "Person", "name": "Familie Ehrlich" },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "18:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Saturday"],
+            "opens": "10:00",
+            "closes": "14:00"
+          }
+        ],
+        "makesOffer": [
+          { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Spaetburgunder Reserve" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Grauburgunder vom Kalkmergel" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Weissburgunder vom Vulkanfels" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Cuvee Vier Generationen" } }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
