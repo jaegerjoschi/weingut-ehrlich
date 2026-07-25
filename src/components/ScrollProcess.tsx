@@ -43,24 +43,91 @@ export function ScrollProcess(props: ScrollProcessProps) {
   return <ProcessScrubbed {...props} />;
 }
 
-// Organische statt rechteckig wirkende Maske: die Grundform bleibt ein
-// vertikaler Verlauf (das Video ist volle Breite, dort gibt es keine Kante zu
-// kaschieren), aber vier zusaetzliche, unterschiedlich breite/hohe Radial-
-// "Ausbeulungen" entlang der Ober-/Unterkante reichen an einzelnen Stellen
-// etwas weiter ins Bild als an anderen. Per Vereinigung (Standard-
-// Kompositing) uebereinandergelegt ergibt das einen leicht welligen statt
-// schnurgeraden Uebergang ins Pergament.
+// Nach dem Vorbild von HeroReveal.tsx (dort nachweislich ohne harte Kanten
+// an jedem Rand): drei grosse, leicht versetzte radiale Ellipsen statt der
+// fruehen Mischung aus Eck-"Ausbeulungen" + separater linearer Vertikal-
+// Maske. Nach rechts-von-der-Mitte verschoben (62-68% x), damit links die
+// Textzone weiterhin vom eigenen Pergament-Schleier (siehe unten) abgedeckt
+// wird, nicht von dieser Maske. Erreichen "transparent" bereits bei 74-80%
+// des eigenen Radius -> vor dem tatsaechlichen Rand bleibt auf allen Seiten
+// ein Sicherheitsabstand mit garantiert voller Transparenz, statt genau am
+// Rand exakt bei 0 anzukommen (siehe Kommentar bei videoOverscan-Style oben
+// am <video>: reines Ausfaden reicht bei Kanten, die exakt auf dem
+// Bildrand liegen, ohnehin nicht aus).
 const videoMaskImage = [
-  "radial-gradient(38% 55% at 25% 0%, #000 45%, transparent 92%)",
-  "radial-gradient(42% 60% at 70% 0%, #000 45%, transparent 92%)",
-  "radial-gradient(40% 55% at 45% 100%, #000 45%, transparent 92%)",
-  "radial-gradient(36% 65% at 80% 100%, #000 45%, transparent 92%)",
-  "linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%)",
+  "radial-gradient(74% 120% at 62% 47%, #000 28%, rgba(0,0,0,0.5) 54%, transparent 80%)",
+  "radial-gradient(68% 112% at 68% 53%, #000 26%, rgba(0,0,0,0.45) 50%, transparent 76%)",
+  "radial-gradient(80% 108% at 58% 50%, #000 24%, rgba(0,0,0,0.4) 48%, transparent 74%)",
 ].join(", ");
 const videoMask: CSSProperties = {
   WebkitMaskImage: videoMaskImage,
   maskImage: videoMaskImage,
 };
+
+// Vertikaler Kanten-Ausblender ueber der GESAMTEN Video-Box. Das war die
+// Ursache der sichtbaren Ober-/Unterkante: die Ellipsen oben haben einen
+// vertikalen Radius von 108-120% der Boxhoehe und erreichen "transparent"
+// erst bei 74-80% davon - an der Ober-/Unterkante selbst steht die Maske
+// dadurch noch bei 88-94% Deckkraft (nachgerechnet). Das Quellmaterial
+// liegt dort im Mittel bei rgb(205,200,188), das Pergament der Seite bei
+// rgb(240,235,225): rund 30 Helligkeitsstufen Unterschied, also eine klar
+// sichtbare waagerechte Linie. HeroReveal hat dasselbe Maskenverhalten,
+// deckt es aber mit zwei Pergament-Balken (h-52) oben/unten ab - hier gab
+// es die nie.
+//
+// Bewusst eine EIGENE, verschachtelte Ebene statt eines vierten Layers in
+// videoMaskImage: mehrere mask-image-Layer auf EINEM Element werden per
+// Vereinigung (add) kombiniert, ein zusaetzlicher Verlauf wuerde die
+// Randdeckkraft also noch erhoehen statt sie zu senken. Verschachtelte
+// Masken multiplizieren sich dagegen von selbst, ohne auf
+// mask-composite: intersect angewiesen zu sein.
+//
+// Die Stuetzstellen bilden eine Smoothstep-Kurve nach statt linear
+// anzusteigen: ein linearer Alpha-Verlauf erzeugt an seinen beiden Knicken
+// sichtbare Mach-Baender, gerade auf so grossen, ruhigen Flaechen. Erste
+// und letzte Stufe liegen exakt auf 0 (nicht knapp darueber), damit an der
+// tatsaechlichen Kante garantiert nichts stehen bleibt.
+const edgeFadeMaskImage = [
+  "linear-gradient(to bottom,",
+  "transparent 0%,",
+  "rgba(0,0,0,0.05) 3%,",
+  "rgba(0,0,0,0.16) 6%,",
+  "rgba(0,0,0,0.5) 12%,",
+  "rgba(0,0,0,0.84) 18%,",
+  "#000 24%,",
+  "#000 76%,",
+  "rgba(0,0,0,0.84) 82%,",
+  "rgba(0,0,0,0.5) 88%,",
+  "rgba(0,0,0,0.16) 94%,",
+  "rgba(0,0,0,0.05) 97%,",
+  "transparent 100%)",
+].join(" ");
+const edgeFadeMask: CSSProperties = {
+  WebkitMaskImage: edgeFadeMaskImage,
+  maskImage: edgeFadeMaskImage,
+};
+
+// Pergament-Schleier von links fuer ruhigen Textkontrast: im Textbereich
+// kraeftig deckend, in der Mitte-rechts durchlaessig fuer die Animation,
+// zu beiden Seiten auf volle Deckkraft. Dass er BEIDE Enden (0% und 96%)
+// voll deckend erreicht, ist kein Detail: der Schleier liegt jetzt INNEN
+// in der max-w-[1440px]-Box (siehe JSX) und deckt damit auf Viewports ueber
+// 1440px genau deren senkrechte Kanten ab. Vorher spannte er ueber die
+// volle Viewportbreite, sein deckendes Ende lag also neben der Box statt
+// auf ihr, und die Box stand dort mit rund 85% Restdeckkraft (rightEdge der
+// Ellipsen-Maske) gegen das Pergament.
+const paperVeil = [
+  "linear-gradient(to right,",
+  "rgba(240,235,225,1) 0%,",
+  "rgba(240,235,225,0.97) 4%,",
+  "rgba(240,235,225,0.9) 30%,",
+  "rgba(240,235,225,0.5) 50%,",
+  "rgba(240,235,225,0.3) 58%,",
+  "rgba(240,235,225,0.55) 74%,",
+  "rgba(240,235,225,0.85) 88%,",
+  "rgba(240,235,225,1) 96%,",
+  "rgba(240,235,225,1) 100%)",
+].join(" ");
 
 function ProcessScrubbed({
   id,
@@ -182,48 +249,60 @@ function ProcessScrubbed({
           ref={videoWrapRef}
           className="sticky top-0 flex h-[100svh] w-full items-center overflow-hidden"
         >
-          {/* Scrollgesteuertes Video, oben/unten ins Pergament maskiert.
+          {/* Scrollgesteuertes Video, zu allen Seiten ins Pergament ausgeblendet.
               max-w-[1440px] mx-auto: wie beim Hero bleibt das Video auf sehr
               breiten Bildschirmen (1440px+) bei seiner sinnvollen Groesse
               statt weiter ueber die native 1280x720-Aufloesung hinaus
-              gestreckt zu werden. Unter 1440px ohne Effekt. */}
-          <div className="absolute inset-0 -z-10 mx-auto max-w-[1440px]" style={videoMask}>
-            <video
-              ref={videoRef}
-              className="h-full w-full object-cover"
-              poster={`${posterStart}.webp`}
-              muted
-              playsInline
-              preload={shouldLoad ? "auto" : "none"}
-              aria-hidden="true"
-              tabIndex={-1}
-            >
-              {shouldLoad && (
-                <>
-                  <source media="(max-width: 768px)" src={videoSrcMobile} type="video/mp4" />
-                  <source src={videoSrc} type="video/mp4" />
-                </>
-              )}
-            </video>
-          </div>
+              gestreckt zu werden. Unter 1440px ohne Effekt.
 
-          {/* Pergament-Schleier von links fuer ruhigen Textkontrast: im
-              Textbereich kraeftig deckend, faellt danach zuegig ab, damit
-              die Animation rechts sichtbar bleibt. Ab 88% zieht ein knapper
-              Gegen-Schleier wieder an: ohne ihn stand die Video-Box (max-w-
-              [1440px]) auf breiten Viewports mit hartem Rand gegen das
-              umgebende Pergament, da die Video-Maske selbst nur oben/unten
-              abrundet (siehe videoMask), links/rechts aber bis zum Rand
-              deckend bleibt. Bewusst schmal (nur die letzten ~12%), damit
-              die Animation dort weiterhin grossflaechig sichtbar bleibt. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-10"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(240,235,225,0.97) 0%, rgba(240,235,225,0.93) 30%, rgba(240,235,225,0.55) 50%, rgba(240,235,225,0.08) 68%, rgba(240,235,225,0) 80%, rgba(240,235,225,0) 88%, rgba(240,235,225,0.18) 94%, rgba(240,235,225,0.95) 100%)",
-            }}
-          />
+              Drei bewusst getrennte Ebenen, weil jede eine andere Aufgabe hat
+              und sie sich nur verschachtelt sauber multiplizieren:
+              1. diese Box  -> vertikaler Ausblender auf echte Transparenz an
+                               Ober-/Unterkante (edgeFadeMask),
+              2. Video-Box  -> organische Ellipsen-Vignette (videoMask),
+              3. Schleier   -> waagerechter Pergament-Verlauf (paperVeil).
+              Der Schleier liegt mit in dieser Box und wird daher vom
+              vertikalen Ausblender gleich mit erfasst - so endet auch er
+              nicht an einer eigenen Kante. Weil alles auf Pergament (#f0ebe1)
+              ausblendet und Sektion wie Nachbarsektionen exakt dieselbe Farbe
+              tragen, geht die Animation ohne Absatz in den Seitenhintergrund
+              ueber. */}
+          <div className="absolute inset-0 -z-10 mx-auto max-w-[1440px]" style={edgeFadeMask}>
+            <div className="h-full w-full" style={videoMask}>
+              {/* transform: scale(1.07) "ueberscannt" das Video bewusst: die
+                  Illustration hat eine hart gezeichnete Vignette, die in
+                  manchen Frames bis exakt an den Rand des Quellbilds reicht
+                  (per Pixel-Sampling verifiziert, 0% Abstand). Reines Ausfaden
+                  kann eine Kante, die auf dem Rand selbst liegt, nicht mehr
+                  kaschieren; die 7%ige Vergroesserung schneidet diesen
+                  Randstreifen (~3.3%, Formel 50*(k-1)/k) komplett weg, bevor
+                  die Maske/der Schleier ueberhaupt zum Tragen kommt. */}
+              <video
+                ref={videoRef}
+                className="h-full w-full object-cover"
+                style={{ transform: "scale(1.07)" }}
+                poster={`${posterStart}.webp`}
+                muted
+                playsInline
+                preload={shouldLoad ? "auto" : "none"}
+                aria-hidden="true"
+                tabIndex={-1}
+              >
+                {shouldLoad && (
+                  <>
+                    <source media="(max-width: 768px)" src={videoSrcMobile} type="video/mp4" />
+                    <source src={videoSrc} type="video/mp4" />
+                  </>
+                )}
+              </video>
+            </div>
+
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{ background: paperVeil }}
+            />
+          </div>
 
           <div className="container-content relative">
             {eyebrow && (
